@@ -11,18 +11,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: 'zulu'
+          java-version: '25'
           cache: 'gradle'
+
+      - name: Inject Missing Repositories
+        run: |
+          # build.gradle dosyasının en başına JitPack reposunu zorla ekliyoruz
+          sed -i '1s/^/repositories { maven { url "https:\/\/jitpack.io" } }\n/' build.gradle
 
       - name: Build with Gradle ShadowJar
         run: |
           chmod +x gradlew
-          ./gradlew shadowJar -x test
-
+          ./gradlew shadowJar -x test --no-daemon
+          
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
