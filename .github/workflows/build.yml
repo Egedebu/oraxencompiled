@@ -18,10 +18,14 @@ jobs:
           java-version: '25'
           cache: 'gradle'
 
-      - name: Inject Missing Repositories
+      - name: Inject JitPack to All Modules
         run: |
-          # build.gradle dosyasının en başına JitPack reposunu zorla ekliyoruz
-          sed -i '1s/^/repositories { maven { url "https:\/\/jitpack.io" } }\n/' build.gradle
+          # Eğer settings.gradle.kts (Kotlin) varsa ona ekle, yoksa normal settings.gradle dosyasına ekle
+          if [ -f "settings.gradle.kts" ]; then
+            echo -e '\npluginManagement { repositories { maven { url = uri("https://jitpack.io") } } }\ndependencyResolutionManagement { repositories { maven { url = uri("https://jitpack.io") } } }' >> settings.gradle.kts
+          elif [ -f "settings.gradle" ]; then
+            echo -e '\npluginManagement { repositories { maven { url "https://jitpack.io" } } }\ndependencyResolutionManagement { repositories { maven { url "https://jitpack.io" } } }' >> settings.gradle
+          fi
 
       - name: Build with Gradle ShadowJar
         run: |
