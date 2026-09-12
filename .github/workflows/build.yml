@@ -11,19 +11,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 25
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '25'
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
 
-      - name: Build and Skip Errors
+      - name: Build with Gradle ShadowJar
         run: |
           chmod +x gradlew
-          ./gradlew assemble -x test -x compileJava -x check --continue
+          ./gradlew shadowJar -x test
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Oraxen-Jar
-          path: "**/build/libs/*.jar"
+          path: "**/build/libs/*-all.jar"
