@@ -1,4 +1,4 @@
-name: Build Oraxen Safe
+name: Build Oraxen Fixed
 
 on:
   workflow_dispatch:
@@ -9,9 +9,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: 'v1.218.0' # 26.2 (1.21.4) uyumlu çalışan sürüm
+        uses: actions/checkout@v4 # ref satırını kaldırdık, hata vermeyecek
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
