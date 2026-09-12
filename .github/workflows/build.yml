@@ -18,19 +18,10 @@ jobs:
           java-version: '25'
           cache: 'gradle'
 
-      - name: Inject JitPack to All Modules
-        run: |
-          # Eğer settings.gradle.kts (Kotlin) varsa ona ekle, yoksa normal settings.gradle dosyasına ekle
-          if [ -f "settings.gradle.kts" ]; then
-            echo -e '\npluginManagement { repositories { maven { url = uri("https://jitpack.io") } } }\ndependencyResolutionManagement { repositories { maven { url = uri("https://jitpack.io") } } }' >> settings.gradle.kts
-          elif [ -f "settings.gradle" ]; then
-            echo -e '\npluginManagement { repositories { maven { url "https://jitpack.io" } } }\ndependencyResolutionManagement { repositories { maven { url "https://jitpack.io" } } }' >> settings.gradle
-          fi
-
       - name: Build with Gradle ShadowJar
         run: |
           chmod +x gradlew
-          ./gradlew shadowJar -x test --no-daemon
+          ./gradlew shadowJar -x test --no-daemon -Pcom.github.VolmitSoftware:Iris=https://jitpack.io
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
